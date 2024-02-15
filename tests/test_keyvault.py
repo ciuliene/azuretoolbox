@@ -8,12 +8,10 @@ env_vars = {
     'AZURE_TENANT_ID': '<tenant_id>'
 }
 
-
 class MockSecret:
     def __init__(self, value) -> None:
         self.value = value
         pass
-
 
 class TestKeyVault(unittest.TestCase):
     @mock_imports()
