@@ -1,5 +1,7 @@
 # AzureToolbox
 
+[![Build, test and Package](https://github.com/ciuliene/azuretoolbox/actions/workflows/CICD.yml/badge.svg)](https://github.com/ciuliene/azuretoolbox/actions/workflows/CICD.yml)
+
 Utilities for working with Azure services. This version provides tools for:
 
 - Keyvault
