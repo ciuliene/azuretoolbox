@@ -25,7 +25,17 @@ class Database:
             self._conn = None
         return True
 
+    def __parse__(self, response: list, header: list) -> list[dict]:
+        result = []
+        for row in response:
+            temp = {}
+            for i in range(len(header)):
+                temp[header[i][0]] = row[i]
+            result.append(temp)
+        return result
+
     def query(self, query: str):
         cursor = self._conn.cursor()
         cursor.execute(query)
-        return cursor.fetchall()
+        response = cursor.fetchall()
+        return self.__parse__(response, cursor.description)
