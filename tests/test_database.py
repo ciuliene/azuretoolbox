@@ -53,6 +53,18 @@ class TestDatabase(unittest.TestCase):
         # Act & Assert
         self.assertIsNotNone(db.query('SELECT 1'))
 
+    def test_parsing_response_returns_expected_values(self):
+        # Arrange
+        db = self.get_database()
+        response = [(1, 'test')]
+        header = [('id', None), ('name', None)]
+
+        # Act
+        result = db.__parse__(response, header)
+
+        # Assert
+        self.assertEqual(result, [{'id': 1, 'name': 'test'}])
+
 
 if __name__ == '__main__':
     unittest.main()
