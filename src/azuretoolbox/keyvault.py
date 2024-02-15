@@ -10,7 +10,7 @@ class EnvironmentError(Exception):
 
 
 class KeyVault:
-    def __init__(self, vault_url: str):
+    def __init__(self, vault_url: str) -> None:
         self._check_env()
 
         credential = DefaultAzureCredential()
@@ -20,7 +20,7 @@ class KeyVault:
         )
         pass
 
-    def _check_env(self):
+    def _check_env(self) -> None:
         required_env_vars = ['AZURE_CLIENT_ID',
                              'AZURE_CLIENT_SECRET', 'AZURE_TENANT_ID']
 
@@ -29,7 +29,7 @@ class KeyVault:
                 raise EnvironmentError(
                     f"{var} not found in environment variables")
 
-    def get_secret(self, secret_name: str):
+    def get_secret(self, secret_name: str) -> str | None:
         try:
             return self._secret_client.get_secret(secret_name).value
         except ResourceNotFoundError:  # pragma: no cover

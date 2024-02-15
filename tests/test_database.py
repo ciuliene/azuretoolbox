@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch
 from tests.mocks import mock_imports
+from datetime import datetime
 
 
 @patch.dict('os.environ', {'AzureSql_Server': 'test_server',
@@ -64,6 +65,45 @@ class TestDatabase(unittest.TestCase):
 
         # Assert
         self.assertEqual(result, [{'id': 1, 'name': 'test'}])
+
+    def test_parsing_response_returns_expected_date(self):
+        # Arrange
+        db = self.get_database()
+        response = [(1, 'test', datetime.strptime(
+            '2024-01-01 00:00:00', '%Y-%m-%d %H:%M:%S'))]
+        header = [('id', None), ('name', None), ('date', None)]
+
+        # Act
+        result = db.__parse__(response, header)
+
+        # Assert
+        self.assertEqual(
+            result, [{'id': 1, 'name': 'test', 'date': '2024-01-01 00:00:00'}])
+
+    def test_parsing_response_returns_expected_undefined_value(self):
+        # Arrange
+        db = self.get_database()
+        response = [(1, 'test', None)]
+        header = [('id', None), ('name', None), ('undefined', None)]
+
+        # Act
+        result = db.__parse__(response, header)
+
+        # Assert
+        self.assertEqual(
+            result, [{'id': 1, 'name': 'test', 'undefined': None}])
+
+    def test_updating_record_returns_true(self):
+        # Arrange
+        db = self.get_database()
+        db.connect('test_server', 'test_database',
+                   'test_user', 'test_password')
+
+        # Act
+        result = db.command('UPDATE test_table SET test_column = 1')
+
+        # Assert
+        self.assertTrue(result)
 
 
 if __name__ == '__main__':
