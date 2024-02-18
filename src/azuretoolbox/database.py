@@ -46,8 +46,8 @@ class Database:
         response = cursor.fetchall()
         return self.__parse__(response, cursor.description)
 
-    def command(self, query: str) -> bool:
+    def command(self, query: str, *params: any) -> bool:
         cursor = self._conn.cursor()
-        cursor.execute(query)
+        cursor.execute(query, params)
         self._conn.commit()
         return True
