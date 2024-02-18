@@ -1,21 +1,21 @@
 from pyodbc import connect
 from datetime import datetime
-
+from decimal import Decimal
 
 class Database:
     def __init__(self) -> None:
         self._conn = None
         pass
 
-    def connect(self, server: str, database: str, username: str, password: str) -> bool:
+    def connect(self, server: str, database: str, username: str, password: str, encrypt: bool = True, trust_server_certificate: bool = False, connection_timeout: int = 30) -> bool:
         conn_str = "DRIVER={ODBC Driver 18 for SQL Server};" \
             "SERVER=" + server + ";" \
             "DATABASE=" + database + ";" \
             "UID=" + username + ";" \
             "PWD=" + password + ";" \
-            "Encrypt=yes;" \
-            "TrustServerCertificate=no;" \
-            "Connection Timeout=30;"
+            "Encrypt=" + ("yes" if encrypt else "no") + ";" \
+            "TrustServerCertificate=" + ("yes" if trust_server_certificate else "no") + ";" \
+            "Connection Timeout=" + str(connection_timeout) + ";"
 
         self._conn = connect(conn_str)
         return True
@@ -31,8 +31,12 @@ class Database:
         for row in response:
             temp = {}
             for i in range(len(header)):
-                temp[header[i][0]] = row[i] if type(
-                    row[i]) != datetime else row[i].strftime('%Y-%m-%d %H:%M:%S')
+                if type(row[i]) == datetime:
+                    temp[header[i][0]] = row[i].strftime('%Y-%m-%d %H:%M:%S')
+                elif type(row[i]) == Decimal:
+                    temp[header[i][0]] = float(row[i])
+                else:
+                    temp[header[i][0]] = row[i]
             result.append(temp)
         return result
 
