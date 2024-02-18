@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch
 from tests.mocks import mock_imports
 from datetime import datetime
+from decimal import Decimal
 
 
 @patch.dict('os.environ', {'AzureSql_Server': 'test_server',
@@ -79,6 +80,19 @@ class TestDatabase(unittest.TestCase):
         # Assert
         self.assertEqual(
             result, [{'id': 1, 'name': 'test', 'date': '2024-01-01 00:00:00'}])
+
+    def test_parsing_response_returns_expected_float(self):
+        # Arrange
+        db = self.get_database()
+        response = [(1, 'test', Decimal('1.0'))]
+        header = [('id', None), ('name', None), ('decimal', None)]
+
+        # Act
+        result = db.__parse__(response, header)
+
+        # Assert
+        self.assertEqual(
+            result, [{'id': 1, 'name': 'test', 'decimal': 1.0}])
 
     def test_parsing_response_returns_expected_undefined_value(self):
         # Arrange

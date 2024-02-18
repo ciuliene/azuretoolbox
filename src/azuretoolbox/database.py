@@ -1,6 +1,6 @@
 from pyodbc import connect
 from datetime import datetime
-
+from decimal import Decimal
 
 class Database:
     def __init__(self) -> None:
@@ -13,9 +13,9 @@ class Database:
             "DATABASE=" + database + ";" \
             "UID=" + username + ";" \
             "PWD=" + password + ";" \
-            "Encrypt=" + "yes" if encrypt else "no" + ";" \
-            "TrustServerCertificate=" + "yes" if trust_server_certificate else "no" + ";" \
-            "Connection Timeout=" + connection_timeout + ";"
+            "Encrypt=" + ("yes" if encrypt else "no") + ";" \
+            "TrustServerCertificate=" + ("yes" if trust_server_certificate else "no") + ";" \
+            "Connection Timeout=" + str(connection_timeout) + ";"
 
         self._conn = connect(conn_str)
         return True
@@ -31,8 +31,12 @@ class Database:
         for row in response:
             temp = {}
             for i in range(len(header)):
-                temp[header[i][0]] = row[i] if type(
-                    row[i]) != datetime else row[i].strftime('%Y-%m-%d %H:%M:%S')
+                if type(row[i]) == datetime:
+                    temp[header[i][0]] = row[i].strftime('%Y-%m-%d %H:%M:%S')
+                elif type(row[i]) == Decimal:
+                    temp[header[i][0]] = float(row[i])
+                else:
+                    temp[header[i][0]] = row[i]
             result.append(temp)
         return result
 
