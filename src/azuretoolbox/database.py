@@ -7,15 +7,15 @@ class Database:
         self._conn = None
         pass
 
-    def connect(self, server: str, database: str, username: str, password: str) -> bool:
+    def connect(self, server: str, database: str, username: str, password: str, encrypt: bool = True, trust_server_certificate: bool = False, connection_timeout: int = 30) -> bool:
         conn_str = "DRIVER={ODBC Driver 18 for SQL Server};" \
             "SERVER=" + server + ";" \
             "DATABASE=" + database + ";" \
             "UID=" + username + ";" \
             "PWD=" + password + ";" \
-            "Encrypt=yes;" \
-            "TrustServerCertificate=no;" \
-            "Connection Timeout=30;"
+            "Encrypt=" + "yes" if encrypt else "no" + ";" \
+            "TrustServerCertificate=" + "yes" if trust_server_certificate else "no" + ";" \
+            "Connection Timeout=" + connection_timeout + ";"
 
         self._conn = connect(conn_str)
         return True
