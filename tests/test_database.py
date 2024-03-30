@@ -120,6 +120,19 @@ class TestDatabase(unittest.TestCase):
         self.assertEqual(
             result, [{'id': 1, 'name': 'test', 'undefined': None}])
 
+    def test_parsing_response_returns_expected_bytes(self):
+        # Arrange
+        db = self.get_database()
+        response = [(1, 'test', b'test')]
+        header = (('id', None), ('name', None), ('bytes', None))
+
+        # Act
+        result = db.__parse__(response, header)
+
+        # Assert
+        self.assertEqual(
+            result, [{'id': 1, 'name': 'test', 'bytes': 'test'}])
+
     def test_updating_record_returns_true(self):
         # Arrange
         db = self.get_database()

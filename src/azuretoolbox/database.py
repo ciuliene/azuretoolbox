@@ -32,12 +32,18 @@ class Database:
         for row in response:
             temp = {}
             for i in range(len(header)):
-                if type(row[i]) == datetime:
-                    temp[header[i][0]] = row[i].strftime('%Y-%m-%d %H:%M:%S')
-                elif type(row[i]) == Decimal:
-                    temp[header[i][0]] = float(row[i])
-                else:
-                    temp[header[i][0]] = row[i]
+                try:
+                    if type(row[i]) == datetime:
+                        temp[header[i][0]] = row[i].strftime(
+                            '%Y-%m-%d %H:%M:%S')
+                    elif type(row[i]) == Decimal:
+                        temp[header[i][0]] = float(row[i])
+                    elif type(row[i]) == bytes:
+                        temp[header[i][0]] = row[i].decode('latin-1')
+                    else:
+                        temp[header[i][0]] = row[i]
+                except Exception:  # pragma: no cover
+                    temp[header[i][0]] = str(row[i])
             result.append(temp)
         return result
 
