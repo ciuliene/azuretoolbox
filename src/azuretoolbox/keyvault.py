@@ -21,8 +21,10 @@ class KeyVault:
         pass
 
     def _check_env(self) -> None:
-        required_env_vars = ['AZURE_CLIENT_ID',
-                             'AZURE_CLIENT_SECRET', 'AZURE_TENANT_ID']
+        required_env_vars = [
+            'AZURE_CLIENT_ID',
+            'AZURE_CLIENT_SECRET',
+            'AZURE_TENANT_ID']
 
         for var in required_env_vars:
             if var not in os.environ:
