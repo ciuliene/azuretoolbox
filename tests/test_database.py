@@ -58,6 +58,16 @@ class TestDatabase(unittest.TestCase):
         # Act & Assert
         self.assertIsNotNone(db.query('SELECT 1'))
 
+    def test_database_query_raises_exception_when_connection_is_not_open(self):
+        # Arrange
+        db = self.get_database()
+
+        # Act & Assert
+        with self.assertRaises(Exception) as context:
+            db.query('SELECT 1')
+        self.assertEqual(
+            str(context.exception), 'Connection not established')
+
     def test_parsing_response_returns_expected_values(self):
         # Arrange
         db = self.get_database()
@@ -122,6 +132,16 @@ class TestDatabase(unittest.TestCase):
 
         # Assert
         self.assertTrue(result)
+
+    def test_updating_record_raises_exception_when_connection_is_not_open(self):
+        # Arrange
+        db = self.get_database()
+
+        # Act & Assert
+        with self.assertRaises(Exception) as context:
+            db.command('UPDATE test_table SET test_column = 1')
+        self.assertEqual(
+            str(context.exception), 'Connection not established')
 
 
 if __name__ == '__main__':

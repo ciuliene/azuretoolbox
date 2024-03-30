@@ -42,12 +42,18 @@ class Database:
         return result
 
     def query(self, query: str) -> list[dict]:
+        if self._conn is None:
+            raise Exception("Connection not established")
+
         cursor = self._conn.cursor()
         cursor.execute(query)
         response = cursor.fetchall()
         return self.__parse__(response, cursor.description)
 
     def command(self, query: str, *params: Any) -> bool:
+        if self._conn is None:
+            raise Exception("Connection not established")
+
         cursor = self._conn.cursor()
         cursor.execute(query, params)
         self._conn.commit()
