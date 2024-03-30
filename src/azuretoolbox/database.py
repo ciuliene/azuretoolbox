@@ -1,3 +1,4 @@
+from typing import Any
 from pyodbc import connect
 from datetime import datetime
 from decimal import Decimal
@@ -26,7 +27,7 @@ class Database:
             self._conn = None
         return True
 
-    def __parse__(self, response: list, header: list) -> list[dict]:
+    def __parse__(self, response: list, header: tuple) -> list[dict]:
         result = []
         for row in response:
             temp = {}
@@ -46,7 +47,7 @@ class Database:
         response = cursor.fetchall()
         return self.__parse__(response, cursor.description)
 
-    def command(self, query: str, *params: any) -> bool:
+    def command(self, query: str, *params: Any) -> bool:
         cursor = self._conn.cursor()
         cursor.execute(query, params)
         self._conn.commit()
